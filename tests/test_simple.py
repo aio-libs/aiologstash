@@ -20,5 +20,5 @@ async def test_simple(setup_logger, loop):
         "tags": [],
         "type": "Logstash",
         "level": "INFO",
-        "logger_name": "async_logstash_test",
+        "logger_name": "aiologstash_test",
         "stack_info": None}
