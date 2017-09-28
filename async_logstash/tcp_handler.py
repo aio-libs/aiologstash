@@ -6,9 +6,9 @@ from .base_handler import BaseLogstashHandler
 class TCPLogstashHandler(BaseLogstashHandler):
 
     def __init__(self, host, port,
-                 formatter, level, close_timeout, qsize,
+                 formatter, level, close_timeout, qsize, loop,
                  **kwargs):
-        super().__init__(formatter, level, close_timeout, qsize,
+        super().__init__(formatter, level, close_timeout, qsize, loop,
                          **kwargs)
         self._reader = None
         self._writer = None

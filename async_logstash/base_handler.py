@@ -11,11 +11,11 @@ from .log import logger
 class BaseLogstashHandler(logging.Handler):
 
     def __init__(self,
-                 formatter, level, close_timeout, qsize,
+                 formatter, level, close_timeout, qsize, loop,
                  **kwargs):
         self._close_timeout = close_timeout
 
-        self._loop = asyncio.get_event_loop()
+        self._loop = loop
 
         self._queue = asyncio.Queue(maxsize=qsize, loop=self._loop)
 
