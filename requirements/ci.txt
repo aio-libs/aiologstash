@@ -2,5 +2,4 @@ pytest==3.2.2
 pytest-cov==2.5.1
 python-logstash==0.4.6
 pytest-asyncio==0.8.0
-async-timeout==1.4.0
-flit==0.11.4
+-r prod.txt

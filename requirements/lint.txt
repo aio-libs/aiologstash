@@ -1,0 +1,2 @@
+flake8==3.4.1
+-r prod.txt
