@@ -30,7 +30,7 @@ class BaseLogstashHandler(logging.Handler):
 
     @abc.abstractmethod
     async def connect(self):
-        pass
+        pass  # pragma: no cover
 
     def emit(self, record):
         if self._closing:
@@ -85,7 +85,7 @@ class BaseLogstashHandler(logging.Handler):
 
     @abc.abstractmethod
     async def _send(self, record):
-        pass
+        pass  # pragma: no cover
 
     # dummy statement for default handler close()
     # non conditional close() usage actually

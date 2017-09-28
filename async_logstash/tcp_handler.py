@@ -25,9 +25,6 @@ class TCPLogstashHandler(BaseLogstashHandler):
         self._writer.write(data)
         await self._writer.drain()
 
-    async def drain(self):
-        await self._writer.drain()
-
     async def wait_closed(self):
         await super().wait_closed()
         self._writer.close()
