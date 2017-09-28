@@ -92,7 +92,7 @@ class FakeTcpServer:
 
 
 @pytest.fixture
-async def make_tcp_handler(loop):
+def make_tcp_handler(loop):
     servers = []
     handlers = []
 
@@ -106,12 +106,14 @@ async def make_tcp_handler(loop):
 
     yield go
 
-    for handler in handlers:
-        handler.close()
-        await handler.wait_closed()
+    async def finalize():
+        for handler in handlers:
+            handler.close()
+            await handler.wait_closed()
 
-    for server in servers:
-        await server.close()
+        for server in servers:
+            await server.close()
+    loop.run_until_complete(finalize())
 
 
 @pytest.fixture
