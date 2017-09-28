@@ -2,6 +2,7 @@ import asyncio
 import gc
 import logging
 import socket
+import sys
 
 from json import loads
 
@@ -13,6 +14,16 @@ asyncio.set_event_loop(None)
 
 
 logging.getLogger().setLevel(logging.DEBUG)
+
+
+if sys.version_info >= (3, 5, 2):
+    def create_future(loop):
+        return loop.create_future()
+else:
+    def create_future(loop):  # pragma: no cover
+        """Compatibility wrapper for the loop.create_future() call introduced in
+        3.5.2."""
+        return asyncio.Future(loop=loop)
 
 
 def unused_port():
@@ -85,7 +96,7 @@ class FakeTcpServer:
                     fut.set_result(None)
 
     async def wait(self):
-        fut = self.loop.create_future()
+        fut = create_future(self.loop)
         self.futs.add(fut)
         await fut
         self.futs.remove(fut)
