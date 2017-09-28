@@ -1,0 +1,5 @@
+-r ci.txt
+
+ipython
+ipdb
+pytest-sugar

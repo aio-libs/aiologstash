@@ -1,0 +1,10 @@
+language: python
+python:
+  - "3.5"
+  - "3.6"
+install:
+  - pip install -r requirements/ci.txt
+  - pip install codecov
+script: py.test --cov=flit --cov-branch
+after_success: codecov
+sudo: false
