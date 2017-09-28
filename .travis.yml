@@ -9,6 +9,7 @@ python:
 install:
   - pip install codecov
   - pip install -r requirements/ci.txt
+  - flit install
 script:
   - make test
   - PYTHONASYNCIODEBUG=x make test

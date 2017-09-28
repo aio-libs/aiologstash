@@ -3,3 +3,4 @@ pytest-cov
 python-logstash
 pytest-asyncio
 async-timeout
+flit
