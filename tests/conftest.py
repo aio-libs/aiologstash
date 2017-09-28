@@ -7,7 +7,7 @@ from json import loads
 
 import pytest
 
-from async_logstash import create_tcp_handler
+from aiologstash import create_tcp_handler
 
 asyncio.set_event_loop(None)
 
@@ -118,7 +118,7 @@ async def make_tcp_handler(loop):
 def setup_logger(make_tcp_handler):
     async def go(*args, **kwargs):
         handler, server = await make_tcp_handler(*args, **kwargs)
-        logger = logging.getLogger('async_logstash_test')
+        logger = logging.getLogger('aiologstash_test')
         logger.addHandler(handler)
         return logger, server
     yield go
