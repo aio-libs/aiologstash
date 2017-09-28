@@ -87,15 +87,11 @@ class BaseLogstashHandler(logging.Handler):
     async def _send(self, record):
         pass
 
-    @abc.abstractmethod
-    async def drain(self):
-        pass
-
     # dummy statement for default handler close()
     # non conditional close() usage actually
     def close(self):
-        if self._worker is None:
-            return  # already closed
+        if self._closing:
+            return
         self._closing = True
 
         if self._queue.full():
