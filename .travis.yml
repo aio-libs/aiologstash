@@ -51,6 +51,13 @@ jobs:
     script:
       - flit publish
 
+stages:
+  - *lint
+  - test
+  - name: deploy
+    # This will prevent deploy unless it's a tagged commit:
+    if: tag IS present
+
 cache: pip
 before_cache:
 - rm -f $HOME/.cache/pip/log/debug.log
