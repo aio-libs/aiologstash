@@ -15,7 +15,7 @@ env:
 install:
   - travis_retry pip install codecov
   - travis_retry pip install -r requirements/ci.txt
-  - flit install
+  - flit install --symlink
 script:
   - make test
   - codecov
