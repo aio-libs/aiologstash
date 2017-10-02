@@ -136,5 +136,5 @@ def setup_logger(make_tcp_handler):
         handler, server = await make_tcp_handler(*args, **kwargs)
         logger = logging.getLogger('aiologstash_test')
         logger.addHandler(handler)
-        return logger, server
+        return logger, handler, server
     yield go
