@@ -2,4 +2,5 @@ pytest==3.2.2
 pytest-cov==2.5.1
 python-logstash==0.4.6
 pytest-asyncio==0.8.0
+pytest-mock==1.6.3
 -r prod.txt

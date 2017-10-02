@@ -9,7 +9,7 @@ pytestmark = pytest.mark.asyncio
 
 
 async def test_simple(setup_logger, loop):
-    log, srv = await setup_logger()
+    log, hdlr, srv = await setup_logger()
     log.info('Info %s', 'text')
     await srv.wait()
     js = srv.jsons
