@@ -1,7 +1,6 @@
 import asyncio
 import gc
 import logging
-import socket
 import sys
 
 from json import loads
@@ -24,13 +23,6 @@ else:
         """Compatibility wrapper for the loop.create_future() call introduced in
         3.5.2."""
         return asyncio.Future(loop=loop)
-
-
-def unused_port():
-    """Return a port that is unused on the current host."""
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.bind(('127.0.0.1', 0))
-        return s.getsockname()[1]
 
 
 @pytest.fixture
