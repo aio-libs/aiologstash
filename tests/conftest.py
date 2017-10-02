@@ -40,11 +40,6 @@ def event_loop(request):
 
     yield loop
 
-    loop.close()
-    gc.collect()
-    asyncio.set_event_loop(None)
-    return
-
     if not loop.is_closed():
         loop.call_soon(loop.stop)
         loop.run_forever()
@@ -90,6 +85,8 @@ class FakeTcpServer:
     async def on_connect(self, reader, writer):
         while True:
             data = await reader.read(1024)
+            if not data:
+                break
             self.data.extend(data)
             for fut in self.futs:
                 if not fut.done():
@@ -103,15 +100,31 @@ class FakeTcpServer:
 
 
 @pytest.fixture
-def make_tcp_handler(loop):
+def make_tcp_server(loop):
     servers = []
-    handlers = []
 
-    async def go(*args, level=logging.DEBUG, **kwargs):
+    async def go():
         server = FakeTcpServer(loop)
         await server.start()
         servers.append(server)
-        handler = await create_tcp_handler('127.0.0.1', server.port, **kwargs)
+        return server
+
+    yield go
+
+    async def finalize():
+        for server in servers:
+            await server.close()
+    loop.run_until_complete(finalize())
+
+
+@pytest.fixture
+def make_tcp_handler(loop, make_tcp_server):
+    handlers = []
+
+    async def go(*args, level=logging.DEBUG, **kwargs):
+        server = await make_tcp_server()
+        handler = await create_tcp_handler('127.0.0.1', server.port,
+                                           loop=loop, **kwargs)
         handlers.append(handler)
         return handler, server
 
@@ -122,8 +135,6 @@ def make_tcp_handler(loop):
             handler.close()
             await handler.wait_closed()
 
-        for server in servers:
-            await server.close()
     loop.run_until_complete(finalize())
 
 
