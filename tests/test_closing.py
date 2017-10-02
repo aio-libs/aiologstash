@@ -21,3 +21,14 @@ async def test_close_on_closed(setup_logger, mocker):
     hdlr.close()
     assert hdlr._closing
     assert hdlr._worker is not None
+
+
+
+async def test_wait_closed_on_closed(setup_logger, mocker):
+    log, hdlr, srv = await setup_logger()
+    hdlr.close()
+    await hdlr.wait_closed()
+    await hdlr.wait_closed()
+    assert hdlr._closing
+    assert hdlr._worker is None
+    assert hdlr._queue.qsize() == 0
