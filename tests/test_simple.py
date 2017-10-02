@@ -29,3 +29,13 @@ async def test_simple(setup_logger, loop):
 async def test_cannot_connect(unused_tcp_port, loop):
     with pytest.raises(OSError):
         await create_tcp_handler('127.0.0.1', unused_tcp_port, loop=loop)
+
+
+async def test_implicit_loop(make_tcp_server, loop):
+    server = await make_tcp_server()
+    try:
+        handler = await create_tcp_handler('127.0.0.1', server.port)
+        assert handler._loop is loop
+    finally:
+        handler.close()
+        await handler.wait_closed()
