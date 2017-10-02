@@ -63,24 +63,6 @@ class BaseLogstashHandler(logging.Handler):
                 logger.warning(msg, exc_info=exc)
 
     def _serialize(self, record):
-        if record.name == 'aiohttp.access':
-            parts = record.msg.split(' ')
-
-            # '%a %r -> %s done in %Tf sec, sent %O bytes'
-            # ['127.0.0.1', 'GET', '/', 'HTTP/1.1', '->', '404', 'done', 'in', '0.002000', 'sec,', 'sent', '173', 'bytes']  # noqa
-            if len(parts) == 10:
-                record.http = {
-                    'remote_addr': parts[0],
-                    'method': parts[1],
-                    'path': parts[2],
-                    'status': int(parts[5]),
-                    'time': float(parts[8]),
-                }
-            else:
-                msg = 'Broken aiohttp.access message: "%(record)s"'
-                context = {'record': record}
-                logger.warning(msg, context)
-
         return self.format(record) + b'\n'
 
     @abc.abstractmethod
