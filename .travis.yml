@@ -13,7 +13,7 @@ jobs:
   include:
   - stage: lint
     install:
-      - travis_retry -r requirements/lint.txt
+      - travis_retry pip install -r requirements/lint.txt
       - flit install --symlink
     script:
       - true
@@ -23,8 +23,8 @@ jobs:
       - "3.5"
       - "3.6"
     install:
-      - pip install codecov
-      - pip install -r requirements/ci.txt
+      - travis_retry pip install codecov
+      - travis_retry pip install -r requirements/ci.txt
       - flit install
     script:
       - make test
@@ -34,7 +34,7 @@ jobs:
   - stage: deploy
     if: tag IS present
     install:
-      - pip install -r requirements/ci.txt
+      - travis_retry pip install -r requirements/ci.txt
     script:
       - flit publish
 
