@@ -27,5 +27,6 @@ class TCPLogstashHandler(BaseLogstashHandler):
 
     async def wait_closed(self):
         await super().wait_closed()
-        self._writer.close()
-        await asyncio.sleep(0, loop=self._loop)  # wait for writer closing
+        if self._writer is not None:
+            self._writer.close()
+            await asyncio.sleep(0, loop=self._loop)  # wait for writer closing
