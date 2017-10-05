@@ -1,3 +1,5 @@
+import asyncio
+
 from unittest import mock
 
 import pytest
@@ -31,3 +33,20 @@ async def test_wait_closed_on_closed(setup_logger, mocker):
     assert hdlr._closing
     assert hdlr._worker is None
     assert hdlr._queue.qsize() == 0
+
+
+async def test_timeout_on_closing(setup_logger, loop):
+    log, hdlr, srv = await setup_logger(close_timeout=0.01)
+
+    fut = asyncio.Future(loop=loop)
+
+    async def coro(record):
+        await fut
+
+    hdlr._send = coro
+
+    log.info('Msg')
+    hdlr.close()
+    await hdlr.wait_closed()
+    assert hdlr._worker is None
+    assert fut.cancelled()

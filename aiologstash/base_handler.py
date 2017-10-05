@@ -2,7 +2,7 @@ import abc
 import asyncio
 import logging
 
-import async_timeout
+from async_timeout import timeout
 from logstash import LogstashFormatterVersion1
 
 from .log import logger
@@ -89,7 +89,7 @@ class BaseLogstashHandler(logging.Handler):
         if self._worker is None:
             return  # already closed
         try:
-            with async_timeout.timeout(self._close_timeout, loop=self._loop):
+            async with timeout(self._close_timeout, loop=self._loop):
                 await self._worker
         except asyncio.TimeoutError:
             self._worker.cancel()
