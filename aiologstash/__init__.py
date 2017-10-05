@@ -22,7 +22,7 @@ async def create_tcp_handler(host, port, formatter=None,
                                  close_timeout=close_timeout,
                                  qsize=qsize, loop=loop, **kwargs)
     try:
-        await handler.connect()
+        await handler._connect()
     except OSError:
         handler.close()
         await handler.wait_closed()

@@ -15,7 +15,7 @@ class TCPLogstashHandler(BaseLogstashHandler):
         self._host = host
         self._port = port
 
-    async def connect(self):
+    async def _connect(self):
         self._reader, self._writer = await asyncio.open_connection(
             self._host, self._port,
             loop=self._loop)
@@ -25,8 +25,7 @@ class TCPLogstashHandler(BaseLogstashHandler):
         self._writer.write(data)
         await self._writer.drain()
 
-    async def wait_closed(self):
-        await super().wait_closed()
+    async def _disconnect(self):
         if self._writer is not None:
             self._writer.close()
             await asyncio.sleep(0, loop=self._loop)  # wait for writer closing

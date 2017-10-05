@@ -29,7 +29,15 @@ class BaseLogstashHandler(logging.Handler):
         self._worker = self._loop.create_task(self._work())
 
     @abc.abstractmethod
-    async def connect(self):
+    async def _connect(self):
+        pass  # pragma: no cover
+
+    @abc.abstractmethod
+    async def _send(self, record):
+        pass  # pragma: no cover
+
+    @abc.abstractmethod
+    async def _disconnect(self):
         pass  # pragma: no cover
 
     def emit(self, record):
@@ -64,10 +72,6 @@ class BaseLogstashHandler(logging.Handler):
 
     def _serialize(self, record):
         return self.format(record) + b'\n'
-
-    @abc.abstractmethod
-    async def _send(self, record):
-        pass  # pragma: no cover
 
     # dummy statement for default handler close()
     # non conditional close() usage actually
@@ -104,3 +108,4 @@ class BaseLogstashHandler(logging.Handler):
 
         assert self._queue.qsize() == 1
         assert self._queue.get_nowait() is ...
+        await self._disconnect()
