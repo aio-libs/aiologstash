@@ -5,11 +5,15 @@ from .base_handler import BaseLogstashHandler
 
 class TCPLogstashHandler(BaseLogstashHandler):
 
-    def __init__(self, host, port,
-                 formatter, level, close_timeout, qsize, loop,
+    def __init__(self, *, host, port,
+                 level, close_timeout, qsize, loop,
+                 reconnect_delay, reconnect_jitter,
                  **kwargs):
-        super().__init__(formatter, level, close_timeout, qsize, loop,
-                         **kwargs)
+        super().__init__(level=level,
+                         close_timeout=close_timeout, qsize=qsize,
+                         reconnect_delay=reconnect_delay,
+                         reconnect_jitter=reconnect_jitter,
+                         loop=loop, **kwargs)
         self._reader = None
         self._writer = None
         self._host = host
@@ -20,8 +24,7 @@ class TCPLogstashHandler(BaseLogstashHandler):
             self._host, self._port,
             loop=self._loop)
 
-    async def _send(self, record):
-        data = self._serialize(record)
+    async def _send(self, data):
         self._writer.write(data)
         await self._writer.drain()
 

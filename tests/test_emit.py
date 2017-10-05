@@ -40,5 +40,5 @@ async def test_emit_unexpected_err_in_worker(setup_logger, loop, mocker):
 
     log.info('Msg')
     await fut
-    m_log.warning.assert_called_with('Unexpected Exception while sending log',
+    m_log.warning.assert_called_with('Unexpected exception while sending log',
                                      exc_info=err)
