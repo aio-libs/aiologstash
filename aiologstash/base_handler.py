@@ -40,7 +40,7 @@ class BaseLogstashHandler(logging.Handler):
             return
 
         if self._queue.full():
-            msg = 'Queue is full, so drop message: "%(record)s"'
+            msg = 'Queue is full, drop oldest message: "%(record)s"'
             context = {'record': self._queue.get_nowait()}
             logger.warning(msg, context)
 
@@ -77,7 +77,8 @@ class BaseLogstashHandler(logging.Handler):
         self._closing = True
 
         if self._queue.full():
-            msg = 'Queue is full, so drop message: "%(record)s"'
+            msg = ('Queue is full, drop oldest message before closing'
+                   ': "%(record)s"')
             context = {'record': self._queue.get_nowait()}
             logger.warning(msg, context)
         self._queue.put_nowait(...)
