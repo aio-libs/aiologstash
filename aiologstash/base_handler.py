@@ -88,11 +88,12 @@ class BaseLogstashHandler(logging.Handler):
         while True:
             try:
                 await self._connect()
+                logger.info('Transport reconnected')
+                return
             except OSError:
                 delay = self._random.gauss(self._reconnect_delay,
                                            self._reconnect_jitter)
                 await asyncio.sleep(delay, loop=self._loop)
-        logger.info('Transport reconnected')
 
     def _serialize(self, record):
         return self.format(record) + b'\n'

@@ -32,3 +32,5 @@ class TCPLogstashHandler(BaseLogstashHandler):
         if self._writer is not None:
             self._writer.close()
             await asyncio.sleep(0, loop=self._loop)  # wait for writer closing
+            self._reader = None
+            self._writer = None
