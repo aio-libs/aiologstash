@@ -63,17 +63,24 @@ async def test_reconnection(setup_logger, loop, mocker):
     assert m.call_count == 2
 
 
-async def test_reconnection_failure(setup_logger, loop):
+async def test_reconnection_failure(setup_logger, loop, mocker):
     log, hdlr, srv = await setup_logger(reconnect_delay=0.1,
                                         reconnect_jitter=0)
 
-    m = mock.Mock()
+    open_connection = asyncio.open_connection
+    m = mocker.patch('aiologstash.tcp_handler.asyncio.open_connection')
 
-    async def coro(record):
-        m()
+    flag = False
 
-    hdlr._connect = coro
-    m.side_effect = [OSError(), None, None]
+    async def switcher(*args, **kwargs):
+        nonlocal flag
+        if not flag:
+            flag = True
+            raise OSError()
+        else:
+            return await open_connection(*args, **kwargs)
+
+    m.side_effect = switcher
     t0 = loop.time()
     await hdlr._reconnect()
     assert hdlr._reader is not None

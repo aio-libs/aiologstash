@@ -13,16 +13,18 @@ class TCPLogstashHandler(BaseLogstashHandler):
                          close_timeout=close_timeout, qsize=qsize,
                          reconnect_delay=reconnect_delay,
                          reconnect_jitter=reconnect_jitter,
-                         loop=loop, **kwargs)
+                         loop=loop)
         self._reader = None
         self._writer = None
         self._host = host
         self._port = port
+        self._kwargs = kwargs
 
     async def _connect(self):
         self._reader, self._writer = await asyncio.open_connection(
             self._host, self._port,
-            loop=self._loop)
+            loop=self._loop,
+            **self._kwargs)
 
     async def _send(self, data):
         self._writer.write(data)

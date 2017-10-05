@@ -13,8 +13,7 @@ class BaseLogstashHandler(logging.Handler):
 
     def __init__(self, *,
                  level, close_timeout, qsize, loop,
-                 reconnect_delay, reconnect_jitter,
-                 **kwargs):
+                 reconnect_delay, reconnect_jitter):
         self._close_timeout = close_timeout
         self._reconnect_delay = reconnect_delay
         self._reconnect_jitter = reconnect_jitter
@@ -24,7 +23,7 @@ class BaseLogstashHandler(logging.Handler):
 
         self._queue = asyncio.Queue(maxsize=qsize, loop=self._loop)
 
-        super().__init__(level=level, **kwargs)
+        super().__init__(level=level)
 
         formatter = LogstashFormatterVersion1()
         self.setFormatter(formatter)
