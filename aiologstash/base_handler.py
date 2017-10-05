@@ -1,6 +1,7 @@
 import abc
 import asyncio
 import logging
+import random
 
 from async_timeout import timeout
 from logstash import LogstashFormatterVersion1
@@ -10,26 +11,36 @@ from .log import logger
 
 class BaseLogstashHandler(logging.Handler):
 
-    def __init__(self,
-                 formatter, level, close_timeout, qsize, loop,
-                 **kwargs):
+    def __init__(self, *,
+                 level, close_timeout, qsize, loop,
+                 reconnect_delay, reconnect_jitter):
         self._close_timeout = close_timeout
+        self._reconnect_delay = reconnect_delay
+        self._reconnect_jitter = reconnect_jitter
+        self._random = random.Random()
 
         self._loop = loop
 
         self._queue = asyncio.Queue(maxsize=qsize, loop=self._loop)
 
-        if formatter is None:
-            formatter = LogstashFormatterVersion1()
+        super().__init__(level=level)
 
-        super().__init__(level=level, **kwargs)
+        formatter = LogstashFormatterVersion1()
         self.setFormatter(formatter)
 
         self._closing = False
         self._worker = self._loop.create_task(self._work())
 
     @abc.abstractmethod
-    async def connect(self):
+    async def _connect(self):
+        pass  # pragma: no cover
+
+    @abc.abstractmethod
+    async def _send(self, data):
+        pass  # pragma: no cover
+
+    @abc.abstractmethod
+    async def _disconnect(self):
         pass  # pragma: no cover
 
     def emit(self, record):
@@ -47,27 +58,44 @@ class BaseLogstashHandler(logging.Handler):
         self._queue.put_nowait(record)
 
     async def _work(self):
+        reconnection = False
         while True:
-            record = await self._queue.get()
+            if not reconnection:
+                record = await self._queue.get()
 
             if record is ...:
                 self._queue.put_nowait(...)
                 break
 
+            reconnection = False
             try:
-                await self._send(record)
+                data = self._serialize(record)
+                try:
+                    await self._send(data)
+                except OSError:
+                    reconnection = True
+                    await self._reconnect()
             except asyncio.CancelledError:
                 raise
             except Exception as exc:
-                msg = 'Unexpected Exception while sending log'
+                msg = 'Unexpected exception while sending log'
                 logger.warning(msg, exc_info=exc)
+
+    async def _reconnect(self):
+        logger.info('Transport disconnected')
+        await self._disconnect()
+        while True:
+            try:
+                await self._connect()
+                logger.info('Transport reconnected')
+                return
+            except OSError:
+                delay = self._random.gauss(self._reconnect_delay,
+                                           self._reconnect_jitter)
+                await asyncio.sleep(delay, loop=self._loop)
 
     def _serialize(self, record):
         return self.format(record) + b'\n'
-
-    @abc.abstractmethod
-    async def _send(self, record):
-        pass  # pragma: no cover
 
     # dummy statement for default handler close()
     # non conditional close() usage actually
@@ -104,3 +132,4 @@ class BaseLogstashHandler(logging.Handler):
 
         assert self._queue.qsize() == 1
         assert self._queue.get_nowait() is ...
+        await self._disconnect()
