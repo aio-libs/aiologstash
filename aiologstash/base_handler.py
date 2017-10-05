@@ -2,7 +2,7 @@ import abc
 import asyncio
 import logging
 
-import async_timeout
+from async_timeout import timeout
 from logstash import LogstashFormatterVersion1
 
 from .log import logger
@@ -40,7 +40,7 @@ class BaseLogstashHandler(logging.Handler):
             return
 
         if self._queue.full():
-            msg = 'Queue is full, so drop message: "%(record)s"'
+            msg = 'Queue is full, drop oldest message: "%(record)s"'
             context = {'record': self._queue.get_nowait()}
             logger.warning(msg, context)
 
@@ -77,7 +77,8 @@ class BaseLogstashHandler(logging.Handler):
         self._closing = True
 
         if self._queue.full():
-            msg = 'Queue is full, so drop message: "%(record)s"'
+            msg = ('Queue is full, drop oldest message before closing'
+                   ': "%(record)s"')
             context = {'record': self._queue.get_nowait()}
             logger.warning(msg, context)
         self._queue.put_nowait(...)
@@ -89,7 +90,7 @@ class BaseLogstashHandler(logging.Handler):
         if self._worker is None:
             return  # already closed
         try:
-            with async_timeout.timeout(self._close_timeout, loop=self._loop):
+            async with timeout(self._close_timeout, loop=self._loop):
                 await self._worker
         except asyncio.TimeoutError:
             self._worker.cancel()
