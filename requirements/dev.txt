@@ -1,5 +1,5 @@
 -r ci.txt
 
-ipython
+ipython==6.2.1
 ipdb
 pytest-sugar
