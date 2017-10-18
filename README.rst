@@ -10,9 +10,6 @@ aiologstash
 .. image:: https://badge.fury.io/py/aiologstash.svg
   :target: https://badge.fury.io/py/aiologstash
 
-.. image:: https://badges.gitter.im/Join%20Chat.svg
-  :target: https://gitter.im/aio-libs/Lobby
-
 asyncio logging handler for logstash.
 
 Installation::
