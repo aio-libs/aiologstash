@@ -1,30 +1,29 @@
 aiologstash
-==============
+===========
 
 .. image:: https://travis-ci.org/wikibusiness/aiologstash.svg?branch=master
   :target:  https://travis-ci.org/wikibusiness/aiologstash
-  :align: right
 
 .. image:: https://codecov.io/gh/wikibusiness/aiologstash/branch/master/graph/badge.svg
   :target: https://codecov.io/gh/wikibusiness/aiologstash
 
 .. image:: https://badge.fury.io/py/aiologstash.svg
-    :target: https://badge.fury.io/py/aiologstash
+  :target: https://badge.fury.io/py/aiologstash
 
 .. image:: https://badges.gitter.im/Join%20Chat.svg
-    :target: https://gitter.im/aio-libs/Lobby
-    :alt: Chat on Gitter
-
+  :target: https://gitter.im/aio-libs/Lobby
 
 asyncio logging handler for logstash.
 
-
 Installation::
 
-   $ pip install aiologstash
+.. code-block:: shell
 
+   pip install aiologstash
 
 Usage::
+
+.. code-block:: python
 
    import logging
    from aiologstash import create_tcp_handler
