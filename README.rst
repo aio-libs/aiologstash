@@ -12,13 +12,15 @@ aiologstash
 
 asyncio logging handler for logstash.
 
-Installation::
+Installation
+------------
 
 .. code-block:: shell
 
    pip install aiologstash
 
-Usage::
+Usage
+-----
 
 .. code-block:: python
 
