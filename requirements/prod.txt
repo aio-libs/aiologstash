@@ -1,2 +1,2 @@
-flit==0.11.4
+flit==0.12
 async-timeout==2.0.0
