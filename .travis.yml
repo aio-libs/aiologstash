@@ -12,6 +12,7 @@ env:
 
 
 install:
+  - travis_retry pip install -U pip wheel
   - travis_retry pip install codecov
   - travis_retry pip install -r requirements/ci.txt
   - flit install --symlink
