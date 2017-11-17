@@ -8,11 +8,13 @@ class TCPLogstashHandler(BaseLogstashHandler):
     def __init__(self, *, host, port,
                  level, close_timeout, qsize, loop,
                  reconnect_delay, reconnect_jitter,
+                 extra,
                  **kwargs):
         super().__init__(level=level,
                          close_timeout=close_timeout, qsize=qsize,
                          reconnect_delay=reconnect_delay,
                          reconnect_jitter=reconnect_jitter,
+                         extra=extra,
                          loop=loop)
         self._reader = None
         self._writer = None
