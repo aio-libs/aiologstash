@@ -28,7 +28,7 @@ async def test_emit_full_queue(setup_logger, loop, mocker):
 async def test_emit_unexpected_err_in_worker(setup_logger, loop, mocker):
     log, hdlr, srv = await setup_logger()
 
-    err = RuntimeError()
+    err = ValueError()
     fut = asyncio.Future(loop=loop)
 
     async def coro(record):
