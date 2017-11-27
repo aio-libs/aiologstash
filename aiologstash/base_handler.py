@@ -74,7 +74,7 @@ class BaseLogstashHandler(logging.Handler):
                 data = self._serialize(record)
                 try:
                     await self._send(data)
-                except OSError:
+                except (OSError, RuntimeError):
                     reconnection = True
                     await self._reconnect()
             except asyncio.CancelledError:
@@ -91,7 +91,7 @@ class BaseLogstashHandler(logging.Handler):
                 await self._connect()
                 logger.info('Transport reconnected')
                 return
-            except OSError:
+            except (OSError, RuntimeError):
                 delay = self._random.gauss(self._reconnect_delay,
                                            self._reconnect_jitter)
                 await asyncio.sleep(delay, loop=self._loop)
