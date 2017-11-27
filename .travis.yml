@@ -52,7 +52,7 @@ jobs:
       - flit publish
 
 stages:
-  - *lint
+  - lint
   - test
   - name: deploy
     # This will prevent deploy unless it's a tagged commit:
