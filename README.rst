@@ -2,7 +2,7 @@ aiologstash
 ===========
 
 .. image:: https://travis-ci.org/aio-libs/aiologstash.svg?branch=master
-  :target:  https://travis-ci.org/wikibusiness/aiologstash
+  :target:  https://travis-ci.org/aio-libs/aiologstash
 
 .. image:: https://codecov.io/gh/aio-libs/aiologstash/branch/master/graph/badge.svg
   :target: https://codecov.io/gh/aio-libs/aiologstash
