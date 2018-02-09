@@ -13,11 +13,13 @@ class BaseLogstashHandler(logging.Handler):
 
     def __init__(self, *,
                  level, close_timeout, qsize, loop,
-                 reconnect_delay, reconnect_jitter):
+                 reconnect_delay, reconnect_jitter,
+                 extra):
         self._close_timeout = close_timeout
         self._reconnect_delay = reconnect_delay
         self._reconnect_jitter = reconnect_jitter
         self._random = random.Random()
+        self._extra = extra
 
         self._loop = loop
 
@@ -72,7 +74,7 @@ class BaseLogstashHandler(logging.Handler):
                 data = self._serialize(record)
                 try:
                     await self._send(data)
-                except OSError:
+                except (OSError, RuntimeError):
                     reconnection = True
                     await self._reconnect()
             except asyncio.CancelledError:
@@ -89,12 +91,15 @@ class BaseLogstashHandler(logging.Handler):
                 await self._connect()
                 logger.info('Transport reconnected')
                 return
-            except OSError:
+            except (OSError, RuntimeError):
                 delay = self._random.gauss(self._reconnect_delay,
                                            self._reconnect_jitter)
                 await asyncio.sleep(delay, loop=self._loop)
 
     def _serialize(self, record):
+        for key, value in self._extra.items():
+            if not hasattr(record, key):
+                setattr(record, key, value)
         return self.format(record) + b'\n'
 
     # dummy statement for default handler close()

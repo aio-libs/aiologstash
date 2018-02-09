@@ -37,3 +37,22 @@ async def test_implicit_loop(make_tcp_server, loop):
     assert handler._loop is loop
     handler.close()
     await handler.wait_closed()
+
+
+async def test_extra(setup_logger, loop):
+    log, hdlr, srv = await setup_logger(extra={'app': 'myapp'})
+    log.info('Info %s', 'text')
+    await srv.wait()
+    js = srv.jsons
+    assert js[0] == {
+        "@timestamp": mock.ANY,
+        "@version": "1",
+        "message": "Info text",
+        "host": socket.gethostname(),
+        "path": __file__,
+        "tags": [],
+        "type": "Logstash",
+        "level": "INFO",
+        "logger_name": "aiologstash_test",
+        "stack_info": None,
+        "app": "myapp"}

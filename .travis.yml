@@ -12,6 +12,7 @@ env:
 
 
 install:
+  - travis_retry pip install -U pip wheel
   - travis_retry pip install codecov
   - travis_retry pip install -r requirements/ci.txt
   - flit install --symlink
@@ -51,7 +52,7 @@ jobs:
       - flit publish
 
 stages:
-  - *lint
+  - lint
   - test
   - name: deploy
     # This will prevent deploy unless it's a tagged commit:
