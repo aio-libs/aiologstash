@@ -1,11 +1,11 @@
 aiologstash
 ===========
 
-.. image:: https://travis-ci.org/wikibusiness/aiologstash.svg?branch=master
-  :target:  https://travis-ci.org/wikibusiness/aiologstash
+.. image:: https://travis-ci.org/aio-libs/aiologstash.svg?branch=master
+  :target:  https://travis-ci.org/aio-libs/aiologstash
 
-.. image:: https://codecov.io/gh/wikibusiness/aiologstash/branch/master/graph/badge.svg
-  :target: https://codecov.io/gh/wikibusiness/aiologstash
+.. image:: https://codecov.io/gh/aio-libs/aiologstash/branch/master/graph/badge.svg
+  :target: https://codecov.io/gh/aio-libs/aiologstash
 
 .. image:: https://badge.fury.io/py/aiologstash.svg
   :target: https://badge.fury.io/py/aiologstash
@@ -32,3 +32,10 @@ Usage
         root = logging.getLogger()
         root.setLevel(logging.DEBUG)
         root.addHandler(handler)
+
+Thanks
+------
+
+The library was donated by `Ocean S.A. <https://ocean.io/>`_
+
+Thanks to the company for contribution.
