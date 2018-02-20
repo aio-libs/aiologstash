@@ -1,3 +1,3 @@
 flake8==3.5.0
-isort==4.3.3
+isort==4.3.4
 -r prod.txt
