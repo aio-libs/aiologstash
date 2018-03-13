@@ -59,5 +59,3 @@ stages:
     if: tag IS present
 
 cache: pip
-notifications:
-  email: false
