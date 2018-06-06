@@ -1,7 +1,7 @@
 """asyncio-compatible logstash logging handler."""
 
 
-__version__ = '1.0.0'
+__version__ = '1.1.0a0'
 
 import asyncio
 import logging
