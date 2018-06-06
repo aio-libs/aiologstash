@@ -2,6 +2,7 @@ import abc
 import asyncio
 import logging
 import random
+import threading
 
 from async_timeout import timeout
 from logstash import LogstashFormatterVersion1
@@ -22,6 +23,7 @@ class BaseLogstashHandler(logging.Handler):
         self._extra = extra
 
         self._loop = loop
+        self._thread_id = threading.get_ident()
 
         self._queue = asyncio.Queue(maxsize=qsize, loop=self._loop)
 
@@ -51,7 +53,12 @@ class BaseLogstashHandler(logging.Handler):
             context = {'record': record}
             logger.warning(msg, context)
             return
+        if threading.get_ident() != self._thread_id:
+            self._loop.call_soon_threadsafe(self._do_emit, record)
+        else:
+            self._do_emit(record)
 
+    def _do_emit(self, record):
         if self._queue.full():
             msg = 'Queue is full, drop oldest message: "%(record)s"'
             context = {'record': self._queue.get_nowait()}

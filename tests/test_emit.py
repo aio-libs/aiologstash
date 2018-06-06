@@ -1,4 +1,5 @@
 import asyncio
+import threading
 from unittest import mock
 
 import pytest
@@ -87,3 +88,20 @@ async def test_reconnection_failure(setup_logger, loop, mocker):
     t1 = loop.time()
     assert t1 - t0 > 0.1
     assert m.call_count == 2
+
+
+async def test_emit_from_other_thread(setup_logger, loop, mocker):
+    log, hdlr, srv = await setup_logger()
+
+    fut = asyncio.Future(loop=loop)
+
+    async def coro(record):
+        fut.set_result(record)
+
+    hdlr._send = coro
+
+    th = threading.Thread(target=log.info, args=('Msg',))
+    th.start()
+    th.join()
+    rec = await fut
+    assert b'Msg' in rec
