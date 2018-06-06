@@ -3,4 +3,5 @@ pytest-cov==2.5.1
 python-logstash==0.4.6
 pytest-asyncio==0.8.0
 pytest-mock==1.10.0
+pigments==1.6
 -r prod.txt
