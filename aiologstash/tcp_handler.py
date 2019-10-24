@@ -29,6 +29,10 @@ class TCPLogstashHandler(BaseLogstashHandler):
             **self._kwargs)
 
     async def _send(self, data):
+        if self._writer is None:
+            # Perform the connect at first send if not already connected.
+            # This allows the full initialisation to be done before the loop is started
+            await self._connect()
         self._writer.write(data)
         await self._writer.drain()
 
