@@ -11,11 +11,17 @@ from .log import logger
 
 
 class BaseLogstashHandler(logging.Handler):
-
-    def __init__(self, *,
-                 level, close_timeout, qsize, loop,
-                 reconnect_delay, reconnect_jitter,
-                 extra):
+    def __init__(
+        self,
+        *,
+        level,
+        close_timeout,
+        qsize,
+        loop,
+        reconnect_delay,
+        reconnect_jitter,
+        extra
+    ):
         self._close_timeout = close_timeout
         self._reconnect_delay = reconnect_delay
         self._reconnect_jitter = reconnect_jitter
@@ -50,7 +56,7 @@ class BaseLogstashHandler(logging.Handler):
     def emit(self, record):
         if self._closing:
             msg = 'Log message skipped due shutdown "%(record)s"'
-            context = {'record': record}
+            context = {"record": record}
             logger.warning(msg, context)
             return
         if threading.get_ident() != self._thread_id:
@@ -61,7 +67,7 @@ class BaseLogstashHandler(logging.Handler):
     def _do_emit(self, record):
         if self._queue.full():
             msg = 'Queue is full, drop oldest message: "%(record)s"'
-            context = {'record': self._queue.get_nowait()}
+            context = {"record": self._queue.get_nowait()}
             logger.warning(msg, context)
 
         self._queue.put_nowait(record)
@@ -87,27 +93,28 @@ class BaseLogstashHandler(logging.Handler):
             except asyncio.CancelledError:
                 raise
             except Exception as exc:
-                msg = 'Unexpected exception while sending log'
+                msg = "Unexpected exception while sending log"
                 logger.warning(msg, exc_info=exc)
 
     async def _reconnect(self):
-        logger.info('Transport disconnected')
+        logger.info("Transport disconnected")
         await self._disconnect()
         while True:
             try:
                 await self._connect()
-                logger.info('Transport reconnected')
+                logger.info("Transport reconnected")
                 return
             except (OSError, RuntimeError):
-                delay = self._random.gauss(self._reconnect_delay,
-                                           self._reconnect_jitter)
+                delay = self._random.gauss(
+                    self._reconnect_delay, self._reconnect_jitter
+                )
                 await asyncio.sleep(delay, loop=self._loop)
 
     def _serialize(self, record):
         for key, value in self._extra.items():
             if not hasattr(record, key):
                 setattr(record, key, value)
-        return self.format(record) + b'\n'
+        return self.format(record) + b"\n"
 
     # dummy statement for default handler close()
     # non conditional close() usage actually
@@ -117,9 +124,8 @@ class BaseLogstashHandler(logging.Handler):
         self._closing = True
 
         if self._queue.full():
-            msg = ('Queue is full, drop oldest message before closing'
-                   ': "%(record)s"')
-            context = {'record': self._queue.get_nowait()}
+            msg = "Queue is full, drop oldest message before closing" ': "%(record)s"'
+            context = {"record": self._queue.get_nowait()}
             logger.warning(msg, context)
         self._queue.put_nowait(...)
 

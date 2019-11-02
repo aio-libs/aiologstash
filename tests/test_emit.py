@@ -4,6 +4,7 @@ from unittest import mock
 
 import pytest
 
+
 pytestmark = pytest.mark.asyncio
 
 
@@ -16,14 +17,14 @@ async def test_emit_full_queue(setup_logger, loop, mocker):
         await fut
 
     hdlr._send = coro
-    m_log = mocker.patch('aiologstash.base_handler.logger')
+    m_log = mocker.patch("aiologstash.base_handler.logger")
 
-    log.info('Msg 1')
+    log.info("Msg 1")
     assert not m_log.called
-    log.info('Msg 2')
+    log.info("Msg 2")
     m_log.warning.assert_called_with(
-        'Queue is full, drop oldest message: "%(record)s"',
-        {'record': mock.ANY})
+        'Queue is full, drop oldest message: "%(record)s"', {"record": mock.ANY}
+    )
 
 
 async def test_emit_unexpected_err_in_worker(setup_logger, loop, mocker):
@@ -37,12 +38,13 @@ async def test_emit_unexpected_err_in_worker(setup_logger, loop, mocker):
         raise err
 
     hdlr._send = coro
-    m_log = mocker.patch('aiologstash.base_handler.logger')
+    m_log = mocker.patch("aiologstash.base_handler.logger")
 
-    log.info('Msg')
+    log.info("Msg")
     await fut
-    m_log.warning.assert_called_with('Unexpected exception while sending log',
-                                     exc_info=err)
+    m_log.warning.assert_called_with(
+        "Unexpected exception while sending log", exc_info=err
+    )
 
 
 async def test_reconnection(setup_logger, loop, mocker):
@@ -54,22 +56,22 @@ async def test_reconnection(setup_logger, loop, mocker):
         m()
 
     hdlr._send = coro
-    m_log = mocker.patch('aiologstash.base_handler.logger')
+    m_log = mocker.patch("aiologstash.base_handler.logger")
 
     m.side_effect = [OSError(), None]
-    log.info('Msg 1')
+    log.info("Msg 1")
     await asyncio.sleep(0.1, loop=loop)
-    m_log.info.assert_has_calls([mock.call('Transport disconnected'),
-                                 mock.call('Transport reconnected')])
+    m_log.info.assert_has_calls(
+        [mock.call("Transport disconnected"), mock.call("Transport reconnected")]
+    )
     assert m.call_count == 2
 
 
 async def test_reconnection_failure(setup_logger, loop, mocker):
-    log, hdlr, srv = await setup_logger(reconnect_delay=0.1,
-                                        reconnect_jitter=0)
+    log, hdlr, srv = await setup_logger(reconnect_delay=0.1, reconnect_jitter=0)
 
     open_connection = asyncio.open_connection
-    m = mocker.patch('aiologstash.tcp_handler.asyncio.open_connection')
+    m = mocker.patch("aiologstash.tcp_handler.asyncio.open_connection")
 
     flag = False
 
@@ -100,8 +102,8 @@ async def test_emit_from_other_thread(setup_logger, loop, mocker):
 
     hdlr._send = coro
 
-    th = threading.Thread(target=log.info, args=('Msg',))
+    th = threading.Thread(target=log.info, args=("Msg",))
     th.start()
     th.join()
     rec = await fut
-    assert b'Msg' in rec
+    assert b"Msg" in rec
