@@ -28,8 +28,8 @@ class TCPLogstashHandler(BaseLogstashHandler):
             extra=extra,
             loop=loop,
         )
-        self._reader = None  # type: Optional[asyncio.StreamReader]
-        self._writer = None  # type: Optional[asyncio.StreamWriter]
+        self._reader: Optional[asyncio.StreamReader] = None
+        self._writer: Optional[asyncio.StreamWriter] = None
         self._host = host
         self._port = port
         self._kwargs = kwargs

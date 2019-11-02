@@ -32,9 +32,9 @@ class BaseLogstashHandler(logging.Handler):
         self._loop = loop
         self._thread_id = threading.get_ident()
 
-        self._queue = asyncio.Queue(
+        self._queue: asyncio.Queue[Union[logging.LogRecord, None]] = asyncio.Queue(
             maxsize=qsize, loop=self._loop
-        )  # type: asyncio.Queue[Union[logging.LogRecord, None]]  # noqa
+        )
 
         super().__init__(level=level)
 
@@ -42,9 +42,9 @@ class BaseLogstashHandler(logging.Handler):
         self.setFormatter(formatter)
 
         self._closing = False
-        self._worker = self._loop.create_task(
+        self._worker: Optional[asyncio.Task[None]] = self._loop.create_task(
             self._work()
-        )  # type: Optional[asyncio.Task[None]]  # noqa
+        )
 
     @abc.abstractmethod
     async def _connect(self) -> None:
