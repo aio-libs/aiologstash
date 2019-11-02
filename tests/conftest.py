@@ -109,9 +109,7 @@ def make_tcp_handler(loop, make_tcp_server):
 
     async def go(*args, level=logging.DEBUG, **kwargs):
         server = await make_tcp_server()
-        handler = await create_tcp_handler(
-            "127.0.0.1", server.port, loop=loop, **kwargs
-        )
+        handler = await create_tcp_handler("127.0.0.1", server.port, **kwargs)
         handlers.append(handler)
         return handler, server
 
