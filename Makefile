@@ -9,7 +9,7 @@ lint: mypy black flake8
 
 
 mypy:
-	mypy $(SOURCES)
+	mypy --strict aiologstash
 
 
 black:

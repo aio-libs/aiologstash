@@ -1,7 +1,6 @@
 import asyncio
 import gc
 import logging
-import sys
 from json import loads
 
 import pytest
@@ -15,18 +14,8 @@ asyncio.set_event_loop(None)
 logging.getLogger().setLevel(logging.DEBUG)
 
 
-if sys.version_info >= (3, 5, 2):
-
-    def create_future(loop):
-        return loop.create_future()
-
-
-else:
-
-    def create_future(loop):  # pragma: no cover
-        """Compatibility wrapper for the loop.create_future() call introduced in
-        3.5.2."""
-        return asyncio.Future(loop=loop)
+def create_future(loop):
+    return loop.create_future()
 
 
 @pytest.fixture
@@ -120,9 +109,7 @@ def make_tcp_handler(loop, make_tcp_server):
 
     async def go(*args, level=logging.DEBUG, **kwargs):
         server = await make_tcp_server()
-        handler = await create_tcp_handler(
-            "127.0.0.1", server.port, loop=loop, **kwargs
-        )
+        handler = await create_tcp_handler("127.0.0.1", server.port, **kwargs)
         handlers.append(handler)
         return handler, server
 

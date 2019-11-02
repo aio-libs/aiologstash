@@ -6,6 +6,7 @@ __version__ = "1.2.0"
 import asyncio
 import logging
 import types
+from typing import Any, Mapping
 
 from .tcp_handler import TCPLogstashHandler
 
@@ -14,19 +15,17 @@ __all__ = ("create_tcp_handler",)
 
 
 async def create_tcp_handler(
-    host,
-    port,
-    level=logging.NOTSET,
-    close_timeout=5,
-    reconnect_delay=1,
-    reconnect_jitter=0.3,
-    qsize=10000,
-    extra=types.MappingProxyType({}),
-    loop=None,
-    **kwargs
-):
-    if loop is None:
-        loop = asyncio.get_event_loop()
+    host: str,
+    port: int,
+    level: int = logging.NOTSET,
+    close_timeout: float = 5,
+    reconnect_delay: float = 1,
+    reconnect_jitter: float = 0.3,
+    qsize: int = 10000,
+    extra: Mapping[str, Any] = types.MappingProxyType({}),
+    **kwargs: Any
+) -> logging.Handler:
+    loop = asyncio.get_event_loop()
     extra = types.MappingProxyType(extra)
     handler = TCPLogstashHandler(
         host=host,
