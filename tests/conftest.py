@@ -1,7 +1,6 @@
 import asyncio
 import gc
 import logging
-import sys
 from json import loads
 
 import pytest
@@ -15,18 +14,8 @@ asyncio.set_event_loop(None)
 logging.getLogger().setLevel(logging.DEBUG)
 
 
-if sys.version_info >= (3, 5, 2):
-
-    def create_future(loop):
-        return loop.create_future()
-
-
-else:
-
-    def create_future(loop):  # pragma: no cover
-        """Compatibility wrapper for the loop.create_future() call introduced in
-        3.5.2."""
-        return asyncio.Future(loop=loop)
+def create_future(loop):
+    return loop.create_future()
 
 
 @pytest.fixture
