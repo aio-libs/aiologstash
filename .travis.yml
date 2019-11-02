@@ -18,7 +18,6 @@ install:
   - travis_retry pip install -r requirements/ci.txt
   - flit install --symlink
 script:
-  - make lint
   - make test
   - codecov
   - PYTHONASYNCIODEBUG=x make test
