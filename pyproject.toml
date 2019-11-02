@@ -1,0 +1,25 @@
+[build-system]
+requires = ["flit"]
+build-backend = "flit.buildapi"
+
+[tool.flit.metadata]
+module = "aiologstash"
+author = "Andrew Svetlov"
+author-email = "andrew.svetlov@gmail.com"
+home-page = "https://github.com/aio-libs/aiologstash"
+description-file = "README.rst"
+requires-python = ">=3.5.3"
+requires = ["python-logstash", "async-timeout"]
+classifiers = [
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Development Status :: 4 - Beta",
+    "Framework :: AsyncIO"
+]
+

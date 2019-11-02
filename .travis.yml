@@ -4,6 +4,8 @@ sudo: false
 python:
   - 3.5.3
   - &mainstream_python 3.6
+  - 3.7
+  - 3.8
 
 env:
   global:
