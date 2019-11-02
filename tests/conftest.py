@@ -2,12 +2,12 @@ import asyncio
 import gc
 import logging
 import sys
-
 from json import loads
 
 import pytest
 
 from aiologstash import create_tcp_handler
+
 
 asyncio.set_event_loop(None)
 
@@ -16,9 +16,13 @@ logging.getLogger().setLevel(logging.DEBUG)
 
 
 if sys.version_info >= (3, 5, 2):
+
     def create_future(loop):
         return loop.create_future()
+
+
 else:
+
     def create_future(loop):  # pragma: no cover
         """Compatibility wrapper for the loop.create_future() call introduced in
         3.5.2."""
@@ -54,9 +58,9 @@ class FakeTcpServer:
         self.futs = set()
 
     async def start(self):
-        self.server = await asyncio.start_server(self.on_connect,
-                                                 host='127.0.0.1',
-                                                 loop=self.loop)
+        self.server = await asyncio.start_server(
+            self.on_connect, host="127.0.0.1", loop=self.loop
+        )
 
     @property
     def port(self):
@@ -64,8 +68,8 @@ class FakeTcpServer:
 
     @property
     def jsons(self):
-        s = self.data.decode('utf8')
-        return [loads(i) for i in s.split('\n') if i]
+        s = self.data.decode("utf8")
+        return [loads(i) for i in s.split("\n") if i]
 
     async def close(self):
         if self.server is None:
@@ -106,6 +110,7 @@ def make_tcp_server(loop):
     async def finalize():
         for server in servers:
             await server.close()
+
     loop.run_until_complete(finalize())
 
 
@@ -115,8 +120,9 @@ def make_tcp_handler(loop, make_tcp_server):
 
     async def go(*args, level=logging.DEBUG, **kwargs):
         server = await make_tcp_server()
-        handler = await create_tcp_handler('127.0.0.1', server.port,
-                                           loop=loop, **kwargs)
+        handler = await create_tcp_handler(
+            "127.0.0.1", server.port, loop=loop, **kwargs
+        )
         handlers.append(handler)
         return handler, server
 
@@ -134,7 +140,8 @@ def make_tcp_handler(loop, make_tcp_server):
 def setup_logger(make_tcp_handler):
     async def go(*args, **kwargs):
         handler, server = await make_tcp_handler(*args, **kwargs)
-        logger = logging.getLogger('aiologstash_test')
+        logger = logging.getLogger("aiologstash_test")
         logger.addHandler(handler)
         return logger, handler, server
+
     yield go

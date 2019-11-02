@@ -1,8 +1,8 @@
 import asyncio
-
 from unittest import mock
 
 import pytest
+
 
 pytestmark = pytest.mark.asyncio
 
@@ -10,11 +10,11 @@ pytestmark = pytest.mark.asyncio
 async def test_no_emit_on_closed(setup_logger, mocker):
     log, hdlr, srv = await setup_logger()
     hdlr.close()
-    m_log = mocker.patch('aiologstash.base_handler.logger')
-    log.info('Test')
+    m_log = mocker.patch("aiologstash.base_handler.logger")
+    log.info("Test")
     m_log.warning.assert_called_with(
-        'Log message skipped due shutdown "%(record)s"',
-        {'record': mock.ANY})
+        'Log message skipped due shutdown "%(record)s"', {"record": mock.ANY}
+    )
 
 
 async def test_close_on_closed(setup_logger, mocker):
@@ -45,7 +45,7 @@ async def test_timeout_on_closing(setup_logger, loop):
 
     hdlr._send = coro
 
-    log.info('Msg')
+    log.info("Msg")
     hdlr.close()
     await hdlr.wait_closed()
     assert hdlr._worker is None
@@ -61,11 +61,12 @@ async def test_close_full_queue(setup_logger, loop, mocker):
         await fut
 
     hdlr._send = coro
-    m_log = mocker.patch('aiologstash.base_handler.logger')
+    m_log = mocker.patch("aiologstash.base_handler.logger")
 
-    log.info('Msg')
+    log.info("Msg")
     hdlr.close()
     m_log.warning.assert_called_with(
         'Queue is full, drop oldest message before closing: "%(record)s"',
-        {'record': mock.ANY})
+        {"record": mock.ANY},
+    )
     await hdlr.wait_closed()
