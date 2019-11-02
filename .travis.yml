@@ -2,7 +2,6 @@ language: python
 sudo: false
 
 python:
-  - 3.5.3
   - &mainstream_python 3.6
   - 3.7
   - 3.8
@@ -42,8 +41,7 @@ jobs:
       - travis_retry pip install -r requirements/lint.txt
       - flit install --symlink
     script:
-      - flake8 --show-source aiologstash
-      - isort --check-only -rc aiologstash --diff
+      - make lint
   - stage: deploy
     if: tag IS present
     <<: *_mainstream_python_base
