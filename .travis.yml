@@ -1,5 +1,4 @@
 language: python
-sudo: false
 
 python:
   - &mainstream_python 3.6
