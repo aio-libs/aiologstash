@@ -6,6 +6,6 @@ pytest-mock==1.13.0
 pigments==1.6
 black==19.10b0
 flake8==3.7.9
-mypy==0.750
+mypy==0.760
 isort==4.3.21
 -r prod.txt
