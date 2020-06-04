@@ -1,5 +1,5 @@
 flake8==3.8.2
 isort==4.3.10
 black==19.10b0
-mypy==0.770
+mypy==0.780
 -r prod.txt
