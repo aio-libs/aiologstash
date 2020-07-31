@@ -7,5 +7,5 @@ pigments==1.6
 black==19.10b0
 flake8==3.8.3
 mypy==0.782
-isort==5.2.1
+isort==5.2.2
 -r prod.txt
