@@ -5,7 +5,7 @@ pytest-asyncio==0.14.0
 pytest-mock==3.3.1
 pigments==1.6
 black==20.8b1
-flake8==3.8.3
+flake8==3.8.4
 mypy==0.782
 isort==5.5.4
 -r prod.txt
