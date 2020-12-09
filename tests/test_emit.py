@@ -60,7 +60,7 @@ async def test_reconnection(setup_logger, loop, mocker):
 
     m.side_effect = [OSError(), None]
     log.info("Msg 1")
-    await asyncio.sleep(0.1, loop=loop)
+    await asyncio.sleep(0.1)
     m_log.info.assert_has_calls(
         [mock.call("Transport disconnected"), mock.call("Transport reconnected")]
     )
