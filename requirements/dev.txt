@@ -1,5 +1,5 @@
 -r ci.txt
 
-ipython==7.19.0
+ipython==7.25.0
 ipdb==0.13.4
 pytest-sugar==0.9.4
