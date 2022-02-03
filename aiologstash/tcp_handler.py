@@ -36,7 +36,7 @@ class TCPLogstashHandler(BaseLogstashHandler):
 
     async def _connect(self) -> None:
         self._reader, self._writer = await asyncio.open_connection(
-            self._host, self._port, loop=self._loop, **self._kwargs
+            self._host, self._port, **self._kwargs
         )
 
     async def _send(self, data: bytes) -> None:
@@ -47,6 +47,6 @@ class TCPLogstashHandler(BaseLogstashHandler):
     async def _disconnect(self) -> None:
         if self._writer is not None:
             self._writer.close()
-            await asyncio.sleep(0, loop=self._loop)  # wait for writer closing
+            await asyncio.sleep(0)  # wait for writer closing
             self._reader = None
             self._writer = None

@@ -33,7 +33,7 @@ class BaseLogstashHandler(logging.Handler):
         self._thread_id = threading.get_ident()
 
         self._queue: asyncio.Queue[Union[logging.LogRecord, None]] = asyncio.Queue(
-            maxsize=qsize, loop=self._loop
+            maxsize=qsize
         )
 
         super().__init__(level=level)
@@ -113,7 +113,7 @@ class BaseLogstashHandler(logging.Handler):
                 delay = self._random.gauss(
                     self._reconnect_delay, self._reconnect_jitter
                 )
-                await asyncio.sleep(delay, loop=self._loop)
+                await asyncio.sleep(delay)
 
     def _serialize(self, record: logging.LogRecord) -> bytes:
         for key, value in self._extra.items():
